@@ -58,7 +58,7 @@
             const matBottomIn = new THREE.MeshPhongMaterial({ color: 0x222222, side: THREE.BackSide });
 
             // --- Цилиндър (основно тяло)
-            const cylGeom = new THREE.CylinderGeometry(r, r, h, 32);
+            const cylGeom = new THREE.CylinderGeometry(r, r, h, 32); 
             const cyl = new THREE.Mesh(cylGeom, matMain);
             booster.add(cyl);
 
