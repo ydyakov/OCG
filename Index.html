@@ -37,34 +37,25 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-    
-
-     
-     
-
 
         var buster = createBooster(0.3, 4);
         scene.add(buster);
 
 
-        var buster1 = createBooster(0.3, 4);
-        buster1.position.x += 2.5;
-        scene.add(buster1);
+        //var buster1 = createBooster(0.3, 4);
+        //buster1.position.x += 2.5;
+        //scene.add(buster1);
 
-        var tank = createTank(0.9, 3.5);
-        tank.position.x += 1.3;
-        tank.position.y += 1;
-        scene.add(tank);
-
+        //var tank = createTank(0.9, 3.5);
+        //tank.position.x += 1.3;
+        //tank.position.y += 1;
         //scene.add(tank);
 
-        //var tank = createTank(0.5, 3);
-        //tank.position.x += 4;
-        //scene.add(tank);
+    
 
-        //var shuttle = createShuttle(0.5, 3);
-        //shuttle.position.x -= 4;
-        //scene.add(shuttle);
+        var shuttle = createShuttle(0.5, 3);
+        shuttle.position.x -= 4;
+        scene.add(shuttle);
 
         // *********** functions ************************
 
@@ -75,43 +66,18 @@
             const mainMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
             const noseMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
             const backMaterial = new THREE.MeshStandardMaterial({ color: 0x9999ff });
-            const boosterMaterial1 = new THREE.MeshStandardMaterial({ color: 0xff6600 });
-            const boosterMaterial2 = new THREE.MeshStandardMaterial({ color: 0xcc3300 });
+            
 
-            // --- Полуцилиндър (тяло)
+            
             const cylinderGeom = new THREE.CylinderGeometry(r, r, h, radialSegments, heightSegments, false, 0, Math.PI);
             const body = new THREE.Mesh(cylinderGeom, mainMaterial);
-            body.rotation.z = Math.PI / 2;
             shuttle.add(body);
 
             // --- Полуконус (нос)
-            const noseGeom = new THREE.ConeGeometry(r, h * 0.6, radialSegments, heightSegments, false, 0, Math.PI);
+            const noseGeom = new THREE.ConeGeometry(r, h * 0.3, radialSegments, heightSegments, false, 0, Math.PI);
             const nose = new THREE.Mesh(noseGeom, noseMaterial);
-            nose.rotation.z = Math.PI / 2;
-            nose.position.x = h / 2 + (h * 0.6) / 2;
+            nose.position.y = h / 2 + (h * 0.3) / 2;
             shuttle.add(nose);
-
-            // --- Полусфера (задна част)
-            const sphereGeom = new THREE.SphereGeometry(r, radialSegments, heightSegments, 0, Math.PI);
-            const back = new THREE.Mesh(sphereGeom, backMaterial);
-            back.rotation.z = Math.PI / 2;
-            back.position.x = -h / 2 - r / 2;
-            shuttle.add(back);
-
-            // --- Три пресечени конуса (бустери)
-            const boosterPositions = [
-                new THREE.Vector3(-h / 2 - r * 0.5, 0, r * 1.2),
-                new THREE.Vector3(-h / 2 - r * 0.5, 0, -r * 1.2),
-                new THREE.Vector3(-h / 2 - r * 0.5, r * 1.2, 0)
-            ];
-
-            boosterPositions.forEach((pos, i) => {
-                const geom = new THREE.CylinderGeometry(r * 0.4, r * 0.6, r * 1.2, radialSegments, heightSegments, false);
-                const booster = new THREE.Mesh(geom, [boosterMaterial1, boosterMaterial2]);
-                booster.rotation.z = Math.PI / 2;
-                booster.position.copy(pos);
-                shuttle.add(booster);
-            });
 
             return shuttle;
         }
