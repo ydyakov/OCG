@@ -38,8 +38,8 @@
         document.body.appendChild(renderer.domElement);
 
 
-        var buster = createBooster(0.3, 4);
-        scene.add(buster);
+        //var buster = createBooster(0.3, 4);
+        //scene.add(buster);
 
 
         //var buster1 = createBooster(0.3, 4);
@@ -54,12 +54,12 @@
     
 
         var shuttle = createShuttle(0.5, 3);
-        shuttle.position.x -= 4;
+        shuttle.position.x -= 0;
         scene.add(shuttle);
 
         // *********** functions ************************
 
-        function createShuttle(r, h, radialSegments = 32, heightSegments = 16) {
+        function createShuttle(r, h) {
             const shuttle = new THREE.Group();
 
             // Материали
@@ -68,18 +68,65 @@
             const backMaterial = new THREE.MeshStandardMaterial({ color: 0x9999ff });
             
 
-            
-            const cylinderGeom = new THREE.CylinderGeometry(r, r, h, radialSegments, heightSegments, false, 0, Math.PI);
-            const body = new THREE.Mesh(cylinderGeom, mainMaterial);
-            shuttle.add(body);
+            // тяло 
+            const cylinderGeom = new THREE.CylinderGeometry(r, r, h, 32, 16, false, 0, Math.PI);
+            const cylinderMesh = new THREE.Mesh(cylinderGeom, mainMaterial);
+            shuttle.add(cylinderMesh);
 
-            // --- Полуконус (нос)
-            const noseGeom = new THREE.ConeGeometry(r, h * 0.3, radialSegments, heightSegments, false, 0, Math.PI);
-            const nose = new THREE.Mesh(noseGeom, noseMaterial);
-            nose.position.y = h / 2 + (h * 0.3) / 2;
-            shuttle.add(nose);
+            //  (нос)
+            const nouseH = h * 0.15;
+            const nouseR = r * 0.5;
+            const noseGeom = new THREE.CylinderGeometry(nouseR, r, nouseH, 32, 16, false, 0, Math.PI);
+            const noseMesh = new THREE.Mesh(noseGeom, noseMaterial);
+            noseMesh.position.y = ( h / 2) + (nouseH / 2);
+            shuttle.add(noseMesh);
 
+            // обло връхче на носас 
+            const sphereNousGeom = new THREE.SphereGeometry(nouseR, 32, 16, 0, Math.PI, 0, Math.PI / 2);
+            const sphereNousMesh = new THREE.Mesh(sphereNousGeom, noseMaterial);
+            sphereNousMesh.position.y = (h / 2) + (nouseH / 2) + nouseR ; 
+            sphereNousMesh.rotateY(Math.PI / 2);
+            shuttle.add(sphereNousMesh);
+
+            // опашка
+             const hostShape = new THREE.Shape();
+            hostShape.moveTo(0, 0);
+            hostShape.lineTo(0, h * 0.3);
+            hostShape.lineTo(h * 0.7, h * 0.15);
+            hostShape.lineTo(h * 0.7, - h * 0.1);
+            hostShape.lineTo(0, 0);
+
+            const extrudeSettings = {
+                steps: 1,
+                depth: 0.1,
+                bevelEnabled: false,
+            };
+
+            const hostGeom = new THREE.ExtrudeGeometry(hostShape, extrudeSettings);
+            const hostMesh = new THREE.Mesh(hostGeom, mainMaterial);
+            hostMesh.position.y = - (h / 2);
+            shuttle.add(hostMesh);
+
+            // долно крило
+            // опашка
+            const wingShape = new THREE.Shape();
+            wingShape.moveTo(0, 0);
+            wingShape.lineTo(0, h * 0.3);
+            wingShape.lineTo(h * 0.7, h * 0.15);
+            wingShape.lineTo(h * 0.7, - h * 0.1);
+            wingShape.lineTo(0, 0);
+
+            const wingGeom = new THREE.ExtrudeGeometry(wingShape, extrudeSettings);
+            const wingMesh = new THREE.Mesh(wingGeom, mainMaterial);
+            wingMesh.position.y = - (h / 2);
+            wingMesh.rotateY(Math.PI / 2);
+            shuttle.add(wingMesh);
+
+
+            debugger;
+            shuttle.rotateY(- Math.PI / 2);
             return shuttle;
+            
         }
 
         function createTank(r, h) {
@@ -88,23 +135,23 @@
             // Материали
             const matBody = new THREE.MeshPhongMaterial({ color: 0xff8800 }); // оранжев NASA цвят
 
-            // --- Основен цилиндър ---
+            //  цилиндър 
             const cylGeom = new THREE.CylinderGeometry(r, r, h, 32);
             const body = new THREE.Mesh(cylGeom, matBody);
             tank.add(body);
 
-            // --- Долна полусфера ---
+            //  Долна полусфера 
             const sphereBottomGeom = new THREE.SphereGeometry(r, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
             const sphereBottom = new THREE.Mesh(sphereBottomGeom, matBody);
-            sphereBottom.position.y = -h / 2; // долу
-            sphereBottom.rotation.x = Math.PI; // обърната наопаки, за да сочи надолу
+            sphereBottom.position.y = -h / 2; 
+            sphereBottom.rotation.x = Math.PI; 
             tank.add(sphereBottom);
 
-            // --- Горна издължена полусфера ---
+            // Горна издължена полусфера 
             const sphereTopGeom = new THREE.SphereGeometry(r, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
             const sphereTop = new THREE.Mesh(sphereTopGeom, matBody);
-            sphereTop.position.y = h / 2; // горе
-            sphereTop.scale.y = 1.8; // издължаваме я по височина
+            sphereTop.position.y = h / 2; 
+            sphereTop.scale.y = 1.8; 
             tank.add(sphereTop);
 
             return tank;
