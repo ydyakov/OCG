@@ -38,62 +38,64 @@
         document.body.appendChild(renderer.domElement);
 
 
-        //var buster = createBooster(0.3, 4);
-        //scene.add(buster);
+        var busterL = createBooster(0.3);
+        scene.add(busterL);
 
 
-        //var buster1 = createBooster(0.3, 4);
-        //buster1.position.x += 2.5;
-        //scene.add(buster1);
+        var busterR = createBooster(0.3);
+        busterR.position.x += 2.5;
+        scene.add(busterR);
 
-        //var tank = createTank(0.9, 3.5);
-        //tank.position.x += 1.3;
-        //tank.position.y += 1;
-        //scene.add(tank);
+        var tank = createTank(0.9);
+        tank.position.x += 1.3;
+        tank.position.y += 1;
+        scene.add(tank);
 
     
 
-        var shuttle = createShuttle(0.5, 3);
+        var shuttle = createShuttle(1);
         shuttle.position.x -= 0;
         scene.add(shuttle);
 
         // *********** functions ************************
 
-        function createShuttle(r, h) {
+        function createShuttle(r) {
+            const h = r * 7;
             const shuttle = new THREE.Group();
 
             // Материали
             const mainMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
             const noseMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
             const backMaterial = new THREE.MeshStandardMaterial({ color: 0x9999ff });
-            
+            const materialBlue = new THREE.MeshStandardMaterial({ color: 0x0000ff });
 
             // тяло 
             const cylinderGeom = new THREE.CylinderGeometry(r, r, h, 32, 16, false, 0, Math.PI);
             const cylinderMesh = new THREE.Mesh(cylinderGeom, mainMaterial);
             shuttle.add(cylinderMesh);
 
-            //  (нос)
-            const nouseH = h * 0.15;
-            const nouseR = r * 0.5;
+            // нос
+            const nouseH = h * 0.08;
+            const nouseR = r * 0.85;
             const noseGeom = new THREE.CylinderGeometry(nouseR, r, nouseH, 32, 16, false, 0, Math.PI);
             const noseMesh = new THREE.Mesh(noseGeom, noseMaterial);
             noseMesh.position.y = ( h / 2) + (nouseH / 2);
             shuttle.add(noseMesh);
 
-            // обло връхче на носас 
-            const sphereNousGeom = new THREE.SphereGeometry(nouseR, 32, 16, 0, Math.PI, 0, Math.PI / 2);
+            // обло връхче на носа 
+            const sphereNousGeom = new THREE.SphereGeometry(nouseR *1.04, 32, 16, 0, Math.PI, 0, Math.PI / 2);
             const sphereNousMesh = new THREE.Mesh(sphereNousGeom, noseMaterial);
-            sphereNousMesh.position.y = (h / 2) + (nouseH / 2) + nouseR ; 
+            sphereNousMesh.position.y = (h / 2) + (nouseH / 2)  ; 
             sphereNousMesh.rotateY(Math.PI / 2);
             shuttle.add(sphereNousMesh);
 
             // опашка
-             const hostShape = new THREE.Shape();
+            const hostShape = new THREE.Shape();
+            ///// (y, x)
             hostShape.moveTo(0, 0);
-            hostShape.lineTo(0, h * 0.3);
-            hostShape.lineTo(h * 0.7, h * 0.15);
-            hostShape.lineTo(h * 0.7, - h * 0.1);
+            hostShape.lineTo(0, h * 0.16);
+            hostShape.lineTo(r * 2 , h * 0.04);
+            hostShape.lineTo(r * 2, 0);
             hostShape.lineTo(0, 0);
 
             const extrudeSettings = {
@@ -110,14 +112,21 @@
             // долно крило
             // опашка
             const wingShape = new THREE.Shape();
+            ///// (x, y)
             wingShape.moveTo(0, 0);
-            wingShape.lineTo(0, h * 0.3);
-            wingShape.lineTo(h * 0.7, h * 0.15);
-            wingShape.lineTo(h * 0.7, - h * 0.1);
+            wingShape.lineTo(r * 4.1, 0);
+            wingShape.lineTo(r * 3.9, r);
+            wingShape.lineTo(r * 1.8, h * 0.4);
+            wingShape.lineTo(r , h * 0.85);
+            //------
+            wingShape.lineTo(-r, h * 0.85);
+            wingShape.lineTo(-(r * 1.8), h * 0.4);
+            wingShape.lineTo(- (r * 3.9), r);
+            wingShape.lineTo(- (r * 4.1), 0);
             wingShape.lineTo(0, 0);
 
             const wingGeom = new THREE.ExtrudeGeometry(wingShape, extrudeSettings);
-            const wingMesh = new THREE.Mesh(wingGeom, mainMaterial);
+            const wingMesh = new THREE.Mesh(wingGeom, materialBlue);
             wingMesh.position.y = - (h / 2);
             wingMesh.rotateY(Math.PI / 2);
             shuttle.add(wingMesh);
@@ -129,7 +138,8 @@
             
         }
 
-        function createTank(r, h) {
+        function createTank(r) {
+            const h = r * 3;
             const tank = new THREE.Group();
 
             // Материали
@@ -157,7 +167,8 @@
             return tank;
         }
 
-        function createBooster(r, h) {
+        function createBooster(r) {
+            const h = r * 8;
             const booster = new THREE.Group();
 
             // Материали
