@@ -72,6 +72,8 @@
             const noseMaterial = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
             const backMaterial = new THREE.MeshStandardMaterial({ color: 0x9999ff });
             const materialBlue = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+            const matBottomOut = new THREE.MeshStandardMaterial({ color: 0xff6600, side: THREE.FrontSide });
+            const matBottomIn = new THREE.MeshStandardMaterial({ color: 0x222222, side: THREE.BackSide });
 
             // тяло 
             const cylinderGeom = new THREE.CylinderGeometry(r, r, h, 32, 16, false, 0, Math.PI);
@@ -133,7 +135,34 @@
             wingMesh.position.y = - (h / 2);
             wingMesh.rotateY(Math.PI / 2);
             shuttle.add(wingMesh);
-                      
+
+            // двигатели
+            const r1 = r * 0.14;
+            const r2 = r * 0.23;
+            const h1 = r * 0.45;
+            const engingGeom = new THREE.CylinderGeometry(r1, r2, h1, 32, 1, true);
+            const engingGeomMeshOut = new THREE.Mesh(engingGeom, matBottomOut);
+            const engingGeomMeshIn = new THREE.Mesh(engingGeom, matBottomIn);
+            const engin1 = new THREE.Group();
+            engin1.add(engingGeomMeshOut);
+            engin1.add(engingGeomMeshIn);
+
+            engin1.position.y += -(h / 2) - (h1 / 2);
+
+            const engin2 = engin1.clone();
+            const engin3 = engin1.clone();
+            
+            engin1.position.x += (r * 0.8);
+            engin2.position.x += (r * 0.4);
+            engin3.position.x += (r * 0.4);
+
+            engin2.position.z += r * 0.4;
+            engin3.position.z += -(r * 0.4);
+
+            shuttle.add(engin1);
+            shuttle.add(engin2);
+            shuttle.add(engin3);
+
             shuttle.rotateY(- Math.PI / 2);
             return shuttle;
             
@@ -144,7 +173,7 @@
             const tank = new THREE.Group();
 
             // Материали
-            const matBody = new THREE.MeshPhongMaterial({ color: 0xff8800 }); // оранжев NASA цвят
+            const matBody = new THREE.MeshPhongMaterial({ color: 0xff8800 });
 
             //  цилиндър 
             const cylGeom = new THREE.CylinderGeometry(r, r, h, 32);
@@ -162,7 +191,7 @@
             const sphereTopGeom = new THREE.SphereGeometry(r, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
             const sphereTop = new THREE.Mesh(sphereTopGeom, matBody);
             sphereTop.position.y = h / 2; 
-            sphereTop.scale.y = 1.8; 
+            sphereTop.scale.y = 1.5; 
             tank.add(sphereTop);
 
             return tank;
@@ -173,10 +202,10 @@
             const booster = new THREE.Group();
 
             // Материали
-            const matMain = new THREE.MeshPhongMaterial({ color: 0xffffff });
-            const matTip = new THREE.MeshPhongMaterial({ color: 0xdddddd });
-            const matBottomOut = new THREE.MeshPhongMaterial({ color: 0xff6600, side: THREE.FrontSide });
-            const matBottomIn = new THREE.MeshPhongMaterial({ color: 0x222222, side: THREE.BackSide });
+            const matMain = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            const matTip = new THREE.MeshStandardMaterial({ color: 0xdddddd });
+            const matBottomOut = new THREE.MeshStandardMaterial({ color: 0xff6600, side: THREE.FrontSide });
+            const matBottomIn = new THREE.MeshStandardMaterial({ color: 0x222222, side: THREE.BackSide });
 
             // --- Цилиндър (основно тяло)
             const cylGeom = new THREE.CylinderGeometry(r, r, h, 32); 
